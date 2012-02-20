@@ -1,0 +1,17 @@
+{ "name": "order"
+, "description": "handle ordered async lists"
+, "version": "0.0.1"
+, "homepage": "https://github.com/dodo/node-order"
+, "author": "dodo (https://github.com/dodo)"
+, "repository": {"type": "git", "url": "git://github.com/dodo/node-order.git"}
+, "main": "order.js"
+, "engines": {"node": ">= 0.4.x"}
+, "keywords": ["order", "list", "array", "collection", "sequence", "async", "control", "flow"]
+, "scripts": {
+    "test": "cake build && nodeunit test",
+    "prepublish": "cake build"}
+, "devDependencies": {
+    "nodeunit": ">= 0.5.4",
+    "muffin": ">= 0.2.6",
+    "coffee-script": ">= 1.1.3"}
+}
