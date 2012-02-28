@@ -1,6 +1,7 @@
 
 ready = ({i}) ->
     return if isNaN i # already removed, so skip
+    return if @done[i] # don't call the callback twice
     @done[i] = yes
     # first ready entry after i
     [n, after] = [0, i+1]

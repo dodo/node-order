@@ -88,3 +88,33 @@ module.exports =
 
         æ.equal results.length, 0
         æ.done()
+
+
+    'no double done': (æ) ->
+        n = 0
+        results = [
+            {idx:1, before:-1, after:-1}
+            {idx:2, before:+1, after:-1}
+            {idx:3, before:+2, after:-1}
+            {idx:0, before:-1, after:+1}
+        ]
+        list = new Order (e) ->
+            æ.deepEqual e, results.shift()
+
+        list.push ((done) -> setTimeout(done, 30);n++)
+        list.push ((done) -> setTimeout(done, 10);setTimeout(done, 23);n++)
+        list.push ((done) -> setTimeout(done, 20);n++)
+
+        list.insert 1, ((done) -> setTimeout(done, 4);n++)
+
+        æ.equal list.length, 4
+        æ.deepEqual list.slice(), [0, 3, 1, 2]
+        æ.deepEqual list.done, [no, no, no, no]
+
+        setTimeout ->
+            æ.equal results.length, 0
+            æ.deepEqual list.done, [yes, yes, yes, yes]
+            æ.done()
+        , 32
+
+
