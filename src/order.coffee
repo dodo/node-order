@@ -18,13 +18,13 @@ ready = ({i}) ->
     return if @done[i] # don't call the callback twice
     @done[i] = yes
     # first ready entry after i
-    [n, after] = [0, i+1]
-    after++ while @done[i + ++n] is no
-    after = -1 if @done[i+n] is undefined
+    after = i + 1
+    after++ while @done[after] is no
+    after = -1 if @done[after] is undefined
     # first ready entry before i
-    [n, before] = [0, i-1]
-    before-- while @done[i - ++n] is no
-    before = -1 if @done[i-n] is undefined
+    before = i - 1
+    before-- while @done[before] is no
+    before = -1 if @done[before] is undefined
     # ready into template
     delay this, => # just until the entry got into the list when ready is called sync
         @callback?.call this, {idx:i, before, after}
