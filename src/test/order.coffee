@@ -53,6 +53,26 @@ module.exports =
         æ.done()
 
 
+    'get entry when sync done': (æ) ->
+        n = 0
+        results = [
+            [{idx:0, before:-1, after:-1}, 0]
+            [{idx:1, before:+0, after:-1}, 1]
+        ]
+        list = new Order (e) ->
+            r = results.shift()
+            æ.deepEqual  e,      r[0]
+            æ.equal this[e.idx], r[1]
+        list.push (done) -> done();n++
+        list.push (done) -> done();n++
+
+        æ.equal list.length, 2
+        æ.deepEqual list.slice(), [0, 1]
+        æ.deepEqual list.done, [yes, yes]
+        æ.equal results.length, 0
+        æ.done()
+
+
     rm: (æ) ->
         n = 0
         results = [
@@ -116,5 +136,3 @@ module.exports =
             æ.deepEqual list.done, [yes, yes, yes, yes]
             æ.done()
         , 32
-
-

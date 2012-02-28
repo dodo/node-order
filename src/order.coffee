@@ -1,4 +1,18 @@
 
+mark = (list) ->
+    list._sync = true
+    list
+
+release = (list, result) ->
+    list._sync?()
+    delete list._sync
+    return result
+
+delay = (list, callback) ->
+    if list._sync then list._sync = callback else callback()
+
+
+
 ready = ({i}) ->
     return if isNaN i # already removed, so skip
     return if @done[i] # don't call the callback twice
@@ -12,7 +26,9 @@ ready = ({i}) ->
     before-- while @done[i - ++n] is no
     before = -1 if @done[i-n] is undefined
     # ready into template
-    @callback?.call this, {idx:i, before, after}
+    delay this, => # just until the entry got into the list when ready is called sync
+        @callback?.call this, {idx:i, before, after}
+
 
 
 class Order extends Array
@@ -26,7 +42,7 @@ class Order extends Array
         idx = i:@length
         @done.push no
         @keys.push idx
-        super entry(ready.bind(this, idx))
+        release this, super entry(ready.bind(mark(this), idx))
 
     unshift: (entry) =>
         return unless entry?
@@ -34,7 +50,7 @@ class Order extends Array
         e.i++ for e in @keys
         @done.unshift no
         @keys.unshift idx
-        super entry(ready.bind(this, idx))
+        release this, super entry(ready.bind(mark(this), idx))
 
     pop: () =>
         @keys[@keys.length-1].i = NaN
@@ -54,7 +70,7 @@ class Order extends Array
         e.i++ for e in @keys[i ..]
         @keys.splice(i, 0, idx)
         @done.splice(i, 0, no)
-        @splice i, 0, entry(ready.bind(this, idx))
+        release this, @splice i, 0, entry(ready.bind(mark(this), idx))
 
     remove: (i) =>
         @keys[i].i = NaN
