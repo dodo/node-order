@@ -13,7 +13,7 @@ delay = (list, callback) ->
 
 
 
-ready = ({i}) ->
+ready = ({i}, args...) ->
     return if isNaN i # already removed, so skip
     return if @done[i] # don't call the callback twice
     @done[i] = yes
@@ -27,7 +27,7 @@ ready = ({i}) ->
     before = -1 if @done[before] is undefined
     # ready into template
     delay this, => # just until the entry got into the list when ready is called sync
-        @callback?.call this, {idx:i, before, after}
+        @callback?.call this, {idx:i, before, after}, args...
 
 
 
