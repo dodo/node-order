@@ -53,13 +53,13 @@ class Order extends Array
         release this, super entry(ready.bind(mark(this), idx))
 
     pop: () =>
-        @keys[@keys.length-1].i = NaN
+        @keys[@keys.length-1]?.i = NaN
         @done.pop()
         @keys.pop()
         super
 
     shift: () =>
-        @keys[0].i = NaN
+        @keys[0]?.i = NaN
         @done.shift()
         @keys.shift()
         e.i-- for e in @keys
@@ -73,7 +73,7 @@ class Order extends Array
         release this, @splice i, 0, entry(ready.bind(mark(this), idx))
 
     remove: (i) =>
-        @keys[i].i = NaN
+        @keys[i]?.i = NaN
         @done.splice i, 1
         @keys.splice i, 1
         e.i-- for e in @keys[i ..]
