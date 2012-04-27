@@ -77,7 +77,7 @@ class Order extends Array
         @done.splice i, 1
         @keys.splice i, 1
         e.i-- for e in @keys[i ..]
-        @splice i, 1
+        @splice(i, 1)?[0]
 
 # exports
 
