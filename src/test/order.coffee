@@ -136,3 +136,37 @@ module.exports =
             æ.deepEqual list.done, [yes, yes, yes, yes]
             æ.done()
         , 32
+
+    splice: (æ) ->
+        n = 0
+        results = [
+            {idx:3, before:-1, after:-1}
+            {idx:0, before:-1, after:+3}
+            {idx:1, before:+0, after:+3}
+            {idx:2, before:+1, after:+3}
+        ]
+        list = new Order (e) ->
+            æ.deepEqual e, results.shift()
+
+        list.push ((done) -> setTimeout((-> a[0]=n++;done()), 30);a=[n++])
+        list.push ((done) -> setTimeout((-> a[0]=n++;done()), 20);a=[n++])
+        list.push ((done) -> setTimeout((-> a[0]=n++;done()), 10);a=[n++])
+
+        æ.equal list.length, 3
+        æ.deepEqual (l.slice() for l in list), [[0], [1], [2]]
+        æ.deepEqual list.done, [no, no, no]
+
+        list.splice(1, 1,
+            ((done) -> setTimeout((-> a[0]=n++;done()), 40);a=[n++]),
+            ((done) -> setTimeout((-> a[0]=n++;done()), 50);a=[n++]))
+
+        æ.equal list.length, 4
+        æ.deepEqual (l.slice() for l in list), [[0], [3], [4], [2]]
+        æ.deepEqual list.done, [no, no, no, no]
+
+        setTimeout ->
+            æ.equal results.length, 0
+            æ.deepEqual (l.slice() for l in list), [[7], [8], [9], [5]]
+            æ.deepEqual list.done, [yes, yes, yes, yes]
+            æ.done()
+        , 52
