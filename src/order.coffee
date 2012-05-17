@@ -1,3 +1,4 @@
+{ splice } = Array.prototype
 
 mark = (list) ->
     list._sync = true
@@ -70,14 +71,41 @@ class Order extends Array
         e.i++ for e in @keys[i ..]
         @keys.splice(i, 0, idx)
         @done.splice(i, 0, no)
-        release this, @splice i, 0, entry(ready.bind(mark(this), idx))
+        release this, splice.call this, i, 0, entry(ready.bind(mark(this), idx))
 
     remove: (i) =>
         @keys[i]?.i = NaN
         @done.splice i, 1
         @keys.splice i, 1
         e.i-- for e in @keys[i ..]
-        @splice(i, 1)?[0]
+        splice.call(this, i, 1)?[0]
+
+    splice: (index, del, entries...) =>
+        return super unless index?
+        len = entries.length
+        # prepate tracers
+        e.i = NaN for e in @keys[index ... index+del]
+        idxs  = ({i:i+index} for i in [0 ... len])
+        dones = (no          for i in [0 ... len])
+        @done.splice index, del, dones...
+        @keys.splice index, del, idxs...
+        # recalculate indizes
+        for e in @keys[index+len ..]
+            e.i = e.i - del + len
+        # apply all entries and cache their sync callbacks
+        syncs = []
+        for entry, i in entries
+            mark(this) # reset _sync
+            entries[i] = entry(ready.bind(this, idxs[i]))
+            syncs.push @_sync
+        # now, we are ready for action
+        mark(this) # reset _sync
+        result = super index, del, entries...
+        # release all delayed callbacks
+        sync?() for sync in syncs
+        # reset
+        release(this)
+        result
 
 # exports
 
