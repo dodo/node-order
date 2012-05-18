@@ -32,3 +32,4 @@ list.push(function (done) {
 When calling done the callback given to the constructor gets called.
 
 
+[![Build Status](https://secure.travis-ci.org/dodo/node-order.png)](http://travis-ci.org/dodo/node-order)
