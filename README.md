@@ -1,6 +1,6 @@
-# [order](https://github.com/dodo/node-order)
+# [Order](https://github.com/dodo/node-order)
 
-handle callbacks in order no matter which one finish first and handle them as a list.
+Flow control to keep callbacks in order no matter which one finishs first and handle them as a list.
 
 ## install
 
@@ -9,7 +9,7 @@ handle callbacks in order no matter which one finish first and handle them as a 
 ## usage
 
 ```javascript
-Order = require('order');
+var Order = require('order');
 
 list = new Order(function (idx) {
     // handle here ready elements
@@ -30,6 +30,11 @@ list.push(function (done) {
 ```
 
 When calling done the callback given to the constructor gets called.
+
+## api
+
+It it basically the exact same api like javascripts [`Array`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/) has with the little exception, that it doesn't take direct values, but functions that return the value.
+Also it is _not possible_ to specify an `Order` with a given size like `new Array(23)`.
 
 
 [![Build Status](https://secure.travis-ci.org/dodo/node-order.png)](http://travis-ci.org/dodo/node-order)
